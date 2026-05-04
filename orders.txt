@@ -1,0 +1,19 @@
+========== NEW ORDER ==========
+ORDER ID: ORD-20260504-6831
+DATE: 2026-05-04 04:13:04
+CUSTOMER: Thabo Nkosi
+USERNAME: thabo123
+EMAIL: thabo.nkosi@email.com
+PHONE: 0626614170
+ADDRESS: 308 jeff masemola, pretoria, 0002
+PAYMENT METHOD: Credit Card
+ITEMS:
+  - Obsessed To Progress Tee (REDBAT) x1 - R180
+  - Originals Trefoil Tee (ADIDAS) x1 - R350
+
+SUB TOTAL: R530
+DELIVERY FEE: R0
+GRAND TOTAL: R530
+STATUS: Pending
+========================================
+
