@@ -24,18 +24,25 @@ session_start();
         .sidebar h3 { color: #2D674E; margin-bottom: 15px; }
         .filter-group { margin-bottom: 20px; }
         .filter-group label { display: block; margin: 8px 0; color: #1A1B1B; cursor: pointer; }
+        .filter-group label input { margin-right: 8px; }
         .products-section { flex: 1; }
         .products-header { margin-bottom: 20px; }
         .products-header h2 { color: #2D674E; }
+        .products-header p { color: #6B887C; }
         .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; }
         .product-card { background: #FEFEFE; border-radius: 10px; padding: 20px; text-align: center; border: 1px solid #9AB0A6; transition: transform 0.3s; }
         .product-card:hover { transform: translateY(-5px); }
         .product-card .product-img { width: 100%; height: 180px; object-fit: cover; border-radius: 10px; margin-bottom: 15px; background: #F2EADF; }
         .product-card .brand { color: #2D674E; font-weight: bold; font-size: 18px; }
-        .product-card .name { color: #1A1B1B; margin: 10px 0; }
+        .product-card .name { color: #1A1B1B; margin: 10px 0; font-size: 16px; }
         .product-card .price { color: #2D674E; font-size: 24px; font-weight: bold; margin: 10px 0; }
-        .btn-cart { background: #2D674E; color: #FEFEFE; border: none; padding: 10px; border-radius: 5px; cursor: pointer; width: 100%; }
+        .btn-cart { background: #2D674E; color: #FEFEFE; border: none; padding: 10px; border-radius: 5px; cursor: pointer; width: 100%; font-size: 14px; transition: background 0.3s; }
         .btn-cart:hover { background: #1A4A38; }
+        .category-filter-btn { background: #F2EADF; border: 2px solid #9AB0A6; padding: 8px 16px; border-radius: 20px; cursor: pointer; margin: 5px; transition: all 0.3s; font-size: 13px; }
+        .category-filter-btn:hover, .category-filter-btn.active { background: #2D674E; color: #FEFEFE; border-color: #2D674E; }
+        .filter-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+        .reset-btn { background: #dc3545; color: white; padding: 8px 20px; border: none; border-radius: 5px; cursor: pointer; width: 100%; font-size: 14px; transition: background 0.3s; }
+        .reset-btn:hover { background: #c82333; }
         
         footer { background-color: #1A1B1B; color: #9AB0A6; padding: 40px 20px 20px 20px; margin-top: 50px; }
         .footer-container { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; }
@@ -44,6 +51,11 @@ session_start();
         .footer-section a { color: #9AB0A6; text-decoration: none; display: block; margin: 8px 0; font-size: 14px; }
         .footer-section a:hover { color: #FEFEFE; }
         .footer-bottom { text-align: center; padding-top: 20px; margin-top: 20px; border-top: 1px solid #2D674E; font-size: 12px; }
+        
+        @media (max-width: 768px) {
+            .container { flex-direction: column; }
+            .sidebar { width: 100%; }
+        }
     </style>
 </head>
 <body>
@@ -52,6 +64,7 @@ session_start();
         <a href="about.php">About Us</a>
         <a href="contact.php">Contact Us</a>
         <a href="#">Track Order</a>
+        <a href="messages.php">Messages</a>
     </div>
     
     <header>
@@ -79,20 +92,35 @@ session_start();
     
     <div class="container">
         <div class="sidebar">
-            <h3>Filter</h3>
+            <h3>Filter by Brand</h3>
             <div class="filter-group">
-                <h4>Brand</h4>
                 <label><input type="checkbox" class="filter-brand" value="ELLESSE" onclick="filterProducts()"> ELLESSE</label>
                 <label><input type="checkbox" class="filter-brand" value="REDBAT" onclick="filterProducts()"> REDBAT</label>
                 <label><input type="checkbox" class="filter-brand" value="ADIDAS" onclick="filterProducts()"> ADIDAS</label>
                 <label><input type="checkbox" class="filter-brand" value="VANS" onclick="filterProducts()"> VANS</label>
+                <label><input type="checkbox" class="filter-brand" value="GALXBOY" onclick="filterProducts()"> GALXBOY</label>
+                <label><input type="checkbox" class="filter-brand" value="NIKE" onclick="filterProducts()"> NIKE</label>
+            </div>
+            
+            <h3>Filter by Category</h3>
+            <div class="filter-actions">
+                <button class="category-filter-btn active" onclick="filterByCategory('all', this)">All</button>
+                <button class="category-filter-btn" onclick="filterByCategory('Men', this)">Men</button>
+                <button class="category-filter-btn" onclick="filterByCategory('Women', this)">Women</button>
+                <button class="category-filter-btn" onclick="filterByCategory('Kids', this)">Kids</button>
+                <button class="category-filter-btn" onclick="filterByCategory('Shoes', this)">Shoes</button>
+                <button class="category-filter-btn" onclick="filterByCategory('Accessories', this)">Accessories</button>
+            </div>
+            
+            <div style="margin-top: 20px;">
+                <button onclick="resetFilters()" class="reset-btn">Reset Filters</button>
             </div>
         </div>
         
         <div class="products-section">
             <div class="products-header">
-                <h2>All Products</h2>
-                <p>Browse our collection of pre-loved branded clothing</p>
+                <h2 id="categoryTitle">All Products</h2>
+                <p id="productCount">Browse our collection of pre-loved branded clothing</p>
             </div>
             <div class="products-grid" id="productsGrid"></div>
         </div>
@@ -137,19 +165,41 @@ session_start();
     
     <script>
         const products = [
-            { id: 1, name: "Vintage Logo Tee", brand: "ELLESSE", price: 250, imgFile: "ellesse.jpg" },
-            { id: 2, name: "Obsessed To Progress Tee", brand: "REDBAT", price: 180, imgFile: "redbat.jpg" },
-            { id: 3, name: "Originals Trefoil Tee", brand: "ADIDAS", price: 350, imgFile: "adidas.jpg" },
-            { id: 4, name: "Old Skool", brand: "VANS", price: 420, imgFile: "vans.jpg" }
+            // Original products
+            { id: 1, name: "Vintage Logo Tee", brand: "ELLESSE", price: 250, category: "Men", imgFile: "ellesse.jpg" },
+            { id: 2, name: "Obsessed To Progress Tee", brand: "REDBAT", price: 180, category: "Men", imgFile: "redbat.jpg" },
+            { id: 3, name: "Originals Trefoil Tee", brand: "ADIDAS", price: 350, category: "Men", imgFile: "adidas.jpg" },
+            { id: 4, name: "Old Skool", brand: "VANS", price: 420, category: "Shoes", imgFile: "vans.jpg" },
+            
+            // New products with correct image file names (with spaces and .jpeg)
+            { id: 5, name: "Black Hoodie", brand: "GALXBOY", price: 450, category: "Men", imgFile: "black hoodie.jpeg" },
+            { id: 6, name: "Galxboy Tee", brand: "GALXBOY", price: 280, category: "Men", imgFile: "galxboy tee.jpg.jpeg" },
+            { id: 7, name: "Nike Pants", brand: "NIKE", price: 380, category: "Men", imgFile: "nike pants.jpeg" },
+            { id: 8, name: "Nike Tee", brand: "NIKE", price: 320, category: "Men", imgFile: "nike tee.jpeg" },
+            { id: 9, name: "Redbat Tee", brand: "REDBAT", price: 200, category: "Men", imgFile: "redbat tee.jpeg" }
         ];
+        
+        let currentCategory = 'all';
         
         function displayProducts(productsToShow) {
             const grid = document.getElementById('productsGrid');
+            const count = document.getElementById('productCount');
             grid.innerHTML = '';
+            
+            if (productsToShow.length === 0) {
+                grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; padding: 50px; color: #6B887C;">No products found matching your criteria.</p>';
+                count.textContent = 'No products found';
+                return;
+            }
+            
+            count.textContent = productsToShow.length + ' products found';
+            
             productsToShow.forEach(p => {
+                // URL encode the image filename to handle spaces
+                const imgSrc = 'images/' + encodeURIComponent(p.imgFile);
                 grid.innerHTML += `
                     <div class="product-card">
-                        <img src="images/${p.imgFile}" alt="${p.name}" class="product-img" onerror="this.src='https://placehold.co/250x180?text=Pastimes'">
+                        <img src="${imgSrc}" alt="${p.name}" class="product-img" onerror="this.src='https://placehold.co/250x180?text=Pastimes'">
                         <div class="brand">${p.brand}</div>
                         <div class="name">${p.name}</div>
                         <div class="price">R${p.price}</div>
@@ -168,10 +218,40 @@ session_start();
         function filterProducts() {
             let selectedBrands = Array.from(document.querySelectorAll('.filter-brand:checked')).map(cb => cb.value);
             let filtered = products;
+            
             if (selectedBrands.length > 0) {
-                filtered = products.filter(p => selectedBrands.includes(p.brand));
+                filtered = filtered.filter(p => selectedBrands.includes(p.brand));
             }
+            
+            if (currentCategory !== 'all') {
+                filtered = filtered.filter(p => p.category === currentCategory);
+            }
+            
             displayProducts(filtered);
+        }
+        
+        function filterByCategory(category, btn) {
+            currentCategory = category;
+            
+            document.querySelectorAll('.category-filter-btn').forEach(b => b.classList.remove('active'));
+            if (btn) btn.classList.add('active');
+            
+            document.getElementById('categoryTitle').textContent = category === 'all' ? 'All Products' : category + ' Collection';
+            
+            filterProducts();
+        }
+        
+        function resetFilters() {
+            document.querySelectorAll('.filter-brand').forEach(cb => cb.checked = false);
+            
+            currentCategory = 'all';
+            document.querySelectorAll('.category-filter-btn').forEach(b => {
+                b.classList.remove('active');
+                if (b.textContent === 'All') b.classList.add('active');
+            });
+            document.getElementById('categoryTitle').textContent = 'All Products';
+            
+            displayProducts(products);
         }
         
         displayProducts(products);

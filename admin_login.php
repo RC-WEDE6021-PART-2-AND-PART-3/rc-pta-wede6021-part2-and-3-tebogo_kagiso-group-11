@@ -46,7 +46,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <body>
     <div class="login-container">
         <div class="login-box">
-            <h2>👑 Admin Login</h2>
+            <h2>Admin Login</h2>
             <?php if ($message): ?>
                 <div class="error"><?php echo $message; ?></div>
             <?php endif; ?>
@@ -61,7 +61,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 </div>
                 <button type="submit">Login as Admin</button>
             </form>
-            <a href="index.php" class="back-link">← Back to Website</a>
+            <a href="index.php" class="back-link">Back to Website</a>
         </div>
     </div>
 </body>

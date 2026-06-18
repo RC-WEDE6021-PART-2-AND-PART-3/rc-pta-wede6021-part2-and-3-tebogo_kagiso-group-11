@@ -35,7 +35,6 @@ session_start();
         .category-grid { display: flex; justify-content: center; gap: 30px; flex-wrap: wrap; }
         .category-card { background: #F2EADF; padding: 30px; border-radius: 10px; text-align: center; width: 150px; cursor: pointer; transition: transform 0.3s; }
         .category-card:hover { transform: translateY(-5px); background: #2D674E; color: #FEFEFE; }
-        .category-card .icon { font-size: 40px; display: block; margin-bottom: 10px; }
         .featured { background-color: #F2EADF; padding: 50px 0; }
         .featured h3 { text-align: center; color: #2D674E; font-size: 28px; margin-bottom: 15px; }
         .featured p { text-align: center; color: #6B887C; margin-bottom: 30px; }
@@ -44,9 +43,9 @@ session_start();
         .product-card:hover { transform: translateY(-5px); }
         .product-card .product-img { width: 100%; height: 180px; object-fit: cover; border-radius: 10px; margin-bottom: 15px; background: #F2EADF; }
         .product-card .brand { color: #2D674E; font-weight: bold; font-size: 18px; }
-        .product-card .name { color: #1A1B1B; margin: 10px 0; }
+        .product-card .name { color: #1A1B1B; margin: 10px 0; font-size: 16px; }
         .product-card .price { color: #2D674E; font-size: 1.5em; font-weight: bold; }
-        .btn-cart { background-color: #2D674E; color: #FEFEFE; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin-top: 10px; width: 100%; transition: background 0.3s; }
+        .btn-cart { background-color: #2D674E; color: #FEFEFE; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin-top: 10px; width: 100%; transition: background 0.3s; font-size: 14px; }
         .btn-cart:hover { background-color: #1A4A38; }
         
         footer { background-color: #1A1B1B; color: #9AB0A6; padding: 40px 20px 20px 20px; margin-top: 50px; }
@@ -61,6 +60,7 @@ session_start();
 <body>
     <div class="top-bar">Free delivery on orders over R500</div>
     <div class="help-bar">
+        <a href="messages.php">Messages</a>
         <a href="about.php">About Us</a>
         <a href="contact.php">Contact Us</a>
         <a href="#">Track Order</a>
@@ -108,11 +108,11 @@ session_start();
         <h3>Shop by Category</h3>
         <p>Find exactly what you're looking for</p>
         <div class="category-grid">
-            <div class="category-card"><span class="icon">👜</span>Accessories</div>
-            <div class="category-card"><span class="icon">👨</span>Men</div>
-            <div class="category-card"><span class="icon">👩</span>Women</div>
-            <div class="category-card"><span class="icon">👶</span>Kids</div>
-            <div class="category-card"><span class="icon">👟</span>Shoes</div>
+            <div class="category-card">Accessories</div>
+            <div class="category-card">Men</div>
+            <div class="category-card">Women</div>
+            <div class="category-card">Kids</div>
+            <div class="category-card">Shoes</div>
         </div>
     </div>
     
@@ -166,10 +166,18 @@ session_start();
     
     <script>
         const products = [
-            { id: 1, name: "Vintage Logo Tee", brand: "ELLESSE", price: 250, category: "Men", imgFile: "ellesse.jpg" },
-            { id: 2, name: "Obsessed To Progress Tee", brand: "REDBAT", price: 180, category: "Men", imgFile: "redbat.jpg" },
-            { id: 3, name: "Originals Trefoil Tee", brand: "ADIDAS", price: 350, category: "Men", imgFile: "adidas.jpg" },
-            { id: 4, name: "Old Skool", brand: "VANS", price: 420, category: "Shoes", imgFile: "vans.jpg" }
+            // Original products
+            { id: 1, name: "Vintage Logo Tee", brand: "ELLESSE", price: 250, imgFile: "ellesse.jpg" },
+            { id: 2, name: "Obsessed To Progress Tee", brand: "REDBAT", price: 180, imgFile: "redbat.jpg" },
+            { id: 3, name: "Originals Trefoil Tee", brand: "ADIDAS", price: 350, imgFile: "adidas.jpg" },
+            { id: 4, name: "Old Skool", brand: "VANS", price: 420, imgFile: "vans.jpg" },
+            
+            // New products with correct image file names (with spaces and .jpeg)
+            { id: 5, name: "Black Hoodie", brand: "GALXBOY", price: 450, imgFile: "black hoodie.jpeg" },
+            { id: 6, name: "Galxboy Tee", brand: "GALXBOY", price: 280, imgFile: "galxboy tee.jpg.jpeg" },
+            { id: 7, name: "Nike Pants", brand: "NIKE", price: 380, imgFile: "nike pants.jpeg" },
+            { id: 8, name: "Nike Tee", brand: "NIKE", price: 320, imgFile: "nike tee.jpeg" },
+            { id: 9, name: "Redbat Tee", brand: "REDBAT", price: 200, imgFile: "redbat tee.jpeg" }
         ];
         
         function displayProducts(productsToShow) {
@@ -177,9 +185,11 @@ session_start();
             if (!grid) return;
             grid.innerHTML = '';
             productsToShow.forEach(product => {
+                // URL encode the image filename to handle spaces
+                const imgSrc = 'images/' + encodeURIComponent(product.imgFile);
                 grid.innerHTML += `
                     <div class="product-card">
-                        <img src="images/${product.imgFile}" alt="${product.name}" class="product-img" onerror="this.src='https://placehold.co/250x180?text=Pastimes'">
+                        <img src="${imgSrc}" alt="${product.name}" class="product-img" onerror="this.src='https://placehold.co/250x180?text=Pastimes'">
                         <div class="brand">${product.brand}</div>
                         <div class="name">${product.name}</div>
                         <div class="price">R${product.price}</div>
@@ -193,12 +203,6 @@ session_start();
                     </div>
                 `;
             });
-        }
-        
-        function filterCategory(category) {
-            const filtered = products.filter(p => p.category === category);
-            displayProducts(filtered);
-            document.querySelector('.featured h3').innerHTML = category + " Collection";
         }
         
         document.getElementById('searchInput')?.addEventListener('keyup', function(e) {

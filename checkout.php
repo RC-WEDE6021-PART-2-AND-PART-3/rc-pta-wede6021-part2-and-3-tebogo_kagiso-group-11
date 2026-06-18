@@ -12,6 +12,7 @@ if (empty($_SESSION['cart'])) {
     header("Location: cart.php");
     exit();
 }
+include 'DBConn.php';
 
 // Calculate total
 $subtotal = 0;
@@ -20,7 +21,6 @@ foreach ($_SESSION['cart'] as $item) {
     $subtotal += $item['price'] * $quantity;
 }
 
-// Free delivery over R500
 $delivery_fee = ($subtotal >= 500) ? 0 : 50;
 $grand_total = $subtotal + $delivery_fee;
 
@@ -49,45 +49,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $message = "Please enter a valid phone number (10 digits)!";
         $messageType = "error";
     } else {
-        // Save order to file
-        $order_id = 'ORD-' . date('Ymd') . '-' . rand(1000, 9999);
-        $order_date = date('Y-m-d H:i:s');
+        $user_id = $_SESSION['user_id'];
         $username = $_SESSION['username'];
         
-        // Get cart items
-        $cart_items = "";
+        // Build items string
+        $items_str = "";
         foreach ($_SESSION['cart'] as $item) {
             $qty = isset($item['quantity']) ? $item['quantity'] : 1;
-            $cart_items .= "  - " . $item['name'] . " (" . $item['brand'] . ") x" . $qty . " - R" . ($item['price'] * $qty) . "\n";
+            $items_str .= $item['name'] . " (" . $item['brand'] . ") x" . $qty . " - R" . ($item['price'] * $qty) . "\n";
         }
         
-        // Save order to orders.txt
-        $order_data = "========================================\n";
-        $order_data .= "ORDER ID: $order_id\n";
-        $order_data .= "DATE: $order_date\n";
-        $order_data .= "CUSTOMER: $fullname\n";
-        $order_data .= "USERNAME: $username\n";
-        $order_data .= "EMAIL: $email\n";
-        $order_data .= "PHONE: $phone\n";
-        $order_data .= "ADDRESS: $address, $city, $postal_code\n";
-        $order_data .= "PAYMENT METHOD: $payment_method\n";
-        $order_data .= "ITEMS:\n$cart_items\n";
-        $order_data .= "SUB TOTAL: R$subtotal\n";
-        $order_data .= "DELIVERY FEE: R$delivery_fee\n";
-        $order_data .= "GRAND TOTAL: R$grand_total\n";
-        $order_data .= "STATUS: Pending\n";
-        $order_data .= "========================================\n\n";
+        $sql = "INSERT INTO tblorders (user_id, username, fullname, email, phone, address, city, postal_code, payment_method, items, subtotal, delivery_fee, grand_total, status) 
+                VALUES ('$user_id', '$username', '$fullname', '$email', '$phone', '$address', '$city', '$postal_code', '$payment_method', '$items_str', '$subtotal', '$delivery_fee', '$grand_total', 'pending')";
         
-        $file = fopen("orders.txt", "a");
-        if ($file) {
-            fwrite($file, $order_data);
-            fclose($file);
-            
-            // Clear the cart after successful order
+        if (mysqli_query($conn, $sql)) {
             $_SESSION['cart'] = [];
             $order_success = true;
         } else {
-            $message = "Error processing order. Please try again.";
+            $message = "Error processing order: " . mysqli_error($conn);
             $messageType = "error";
         }
     }
@@ -134,7 +113,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         .payment-option.selected { border-color: #2D674E; background: #F2EADF; }
         .payment-option input { width: auto; margin-right: 15px; }
         .payment-option label { margin: 0; cursor: pointer; flex: 1; }
-        .payment-icon { font-size: 24px; margin-right: 10px; }
         
         button { background: #2D674E; color: #FEFEFE; padding: 14px 25px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; font-weight: bold; transition: background 0.3s; width: 100%; margin-top: 20px; }
         button:hover { background: #1A4A38; }
@@ -166,6 +144,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <a href="about.php">About Us</a>
         <a href="contact.php">Contact Us</a>
         <a href="#">Track Order</a>
+        <a href="messages.php">Messages</a>
     </div>
     
     <header>
@@ -184,6 +163,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <a href="cart.php">Cart</a>
         <?php if(isset($_SESSION['username'])): ?>
             <a href="dashboard.php">Dashboard</a>
+            <a href="messages.php">Messages</a>
             <a href="logout.php">Logout</a>
         <?php else: ?>
             <a href="login.php">Login</a>
@@ -194,11 +174,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <div class="container">
         <?php if ($order_success): ?>
             <div style="flex: 1; background: #FEFEFE; padding: 40px; border-radius: 10px; text-align: center;">
-                <div style="font-size: 60px;">✓</div>
+                <div style="font-size: 60px;">OK</div>
                 <h2 style="color: #2D674E;">Order Placed Successfully!</h2>
                 <p style="margin: 20px 0;">Thank you for shopping at Pastimes!</p>
                 <p style="margin: 10px 0;">Your order has been received and will be processed within 24 hours.</p>
-                <p style="margin: 10px 0;">A confirmation email has been sent to your email address.</p>
+                <p style="margin: 10px 0;">You can track your order in your dashboard.</p>
                 <a href="index.php" style="display: inline-block; margin-top: 30px; background: #2D674E; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px;">Continue Shopping</a>
             </div>
         <?php else: ?>
@@ -242,47 +222,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         </div>
                     </div>
                     
-                    <div class="form-group">
-                        <label>Delivery Instructions (Optional)</label>
-                        <textarea name="instructions" rows="2" placeholder="Gate code, landmark, etc."></textarea>
-                    </div>
-                    
                     <div class="payment-methods">
                         <h3>Payment Method</h3>
                         
                         <div class="payment-option" onclick="selectPayment('credit_card')">
                             <input type="radio" name="payment_method" value="Credit Card" id="credit_card" required>
-                            <span class="payment-icon">💳</span>
                             <label for="credit_card">Credit / Debit Card</label>
-                            <span style="font-size: 12px; color: #6B887C;">Visa, Mastercard, American Express</span>
                         </div>
                         
                         <div class="payment-option" onclick="selectPayment('paypal')">
                             <input type="radio" name="payment_method" value="PayPal" id="paypal">
-                            <span class="payment-icon">💰</span>
                             <label for="paypal">PayPal</label>
-                            <span style="font-size: 12px; color: #6B887C;">Secure online payments</span>
                         </div>
                         
                         <div class="payment-option" onclick="selectPayment('eft')">
                             <input type="radio" name="payment_method" value="EFT / Bank Transfer" id="eft">
-                            <span class="payment-icon">🏦</span>
                             <label for="eft">EFT / Bank Transfer</label>
-                            <span style="font-size: 12px; color: #6B887C;">Direct bank transfer</span>
                         </div>
                         
                         <div class="payment-option" onclick="selectPayment('cash')">
                             <input type="radio" name="payment_method" value="Cash on Delivery" id="cash">
-                            <span class="payment-icon">💵</span>
                             <label for="cash">Cash on Delivery</label>
-                            <span style="font-size: 12px; color: #6B887C;">Pay when you receive</span>
-                        </div>
-                        
-                        <div class="payment-option" onclick="selectPayment('whatsapp')">
-                            <input type="radio" name="payment_method" value="WhatsApp Pay" id="whatsapp">
-                            <span class="payment-icon">💬</span>
-                            <label for="whatsapp">WhatsApp Pay</label>
-                            <span style="font-size: 12px; color: #6B887C;">Pay via WhatsApp</span>
                         </div>
                     </div>
                     
@@ -320,20 +280,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 </div>
                 
                 <?php if ($delivery_fee == 0): ?>
-                    <div class="free-delivery-msg">
-                        You've qualified for FREE delivery!
-                    </div>
+                    <div class="free-delivery-msg">You've qualified for FREE delivery!</div>
                 <?php else: ?>
-                    <div class="delivery-notice">
-                        Add R<?php echo number_format(500 - $subtotal, 2); ?> more for FREE delivery
-                    </div>
+                    <div class="delivery-notice">Add R<?php echo number_format(500 - $subtotal, 2); ?> more for FREE delivery</div>
                 <?php endif; ?>
-                
-                <div style="margin-top: 15px; padding: 10px; background: #FEFEFE; border-radius: 5px; font-size: 12px;">
-                    <p>Secure Payments</p>
-                    <p>100% Buyer Protection</p>
-                    <p>Easy returns within 7 days</p>
-                </div>
             </div>
         <?php endif; ?>
     </div>
@@ -344,18 +294,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <div class="feature">Free Delivery over R500</div>
             <div class="feature">Sustainable Fashion</div>
         </div>
-        <p>© 2024 Pastimes | Tebogo Mabusela (ST10443781) & Kagiso Maputla (ST10455770)</p>
+        <p>2024 Pastimes | Tebogo Mabusela (ST10443781) & Kagiso Maputla (ST10455770)</p>
         <p>Based in Kempton Park | Serving South Africa</p>
     </footer>
     
     <script>
         function selectPayment(method) {
             document.getElementById(method).checked = true;
-            // Remove selected class from all options
             document.querySelectorAll('.payment-option').forEach(opt => {
                 opt.classList.remove('selected');
             });
-            // Add selected class to clicked option
             event.currentTarget.classList.add('selected');
         }
     </script>

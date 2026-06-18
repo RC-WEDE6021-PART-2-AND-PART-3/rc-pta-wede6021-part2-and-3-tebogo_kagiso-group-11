@@ -92,15 +92,11 @@ $total = $subtotal + $delivery_fee;
         .empty-cart a { color: #2D674E; text-decoration: none; font-weight: bold; }
         
         .free-delivery-msg { background: #2D674E; color: white; padding: 10px; border-radius: 5px; text-align: center; margin-top: 15px; }
-        .delivery-notice { background: #F2EADF; padding: 10px; border-radius: 5px; text-align: center; margin-top: 15px; font-size: 14px; }
+        .delivery-notice { background: #F2EADF; padding: 10px; border-radius: 5px; text-align: center; margin-top: 15px; font-size: 14px; border: 1px solid #9AB0A6; }
         
-        footer { background-color: #1A1B1B; color: #9AB0A6; text-align: center; padding: 40px 20px 20px 20px; margin-top: 50px; }
-        .footer-container { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; }
-        .footer-section h4 { color: #FEFEFE; margin-bottom: 15px; font-size: 18px; }
-        .footer-section p { margin: 8px 0; font-size: 14px; line-height: 1.5; }
-        .footer-section a { color: #9AB0A6; text-decoration: none; display: block; margin: 8px 0; font-size: 14px; }
-        .footer-section a:hover { color: #FEFEFE; }
-        .footer-bottom { text-align: center; padding-top: 20px; margin-top: 20px; border-top: 1px solid #2D674E; font-size: 12px; }
+        footer { background-color: #1A1B1B; color: #9AB0A6; text-align: center; padding: 30px; margin-top: 50px; }
+        .footer-features { display: flex; justify-content: center; gap: 40px; margin-bottom: 20px; flex-wrap: wrap; }
+        .feature { text-align: center; }
         
         @media (max-width: 768px) {
             .container { flex-direction: column; }
@@ -115,6 +111,7 @@ $total = $subtotal + $delivery_fee;
         <a href="about.php">About Us</a>
         <a href="contact.php">Contact Us</a>
         <a href="#">Track Order</a>
+        <a href="messages.php">Messages</a>
     </div>
     
     <header>
@@ -133,7 +130,8 @@ $total = $subtotal + $delivery_fee;
         <a href="cart.php">Cart</a>
         <?php if(isset($_SESSION['username'])): ?>
             <a href="dashboard.php">Dashboard</a>
-            <a href="logout.php">Logout (<?php echo $_SESSION['username']; ?>)</a>
+            <a href="messages.php">Messages</a>
+            <a href="logout.php">Logout</a>
         <?php else: ?>
             <a href="login.php">Login</a>
             <a href="register.php">Register</a>
@@ -168,10 +166,6 @@ $total = $subtotal + $delivery_fee;
                         ?>
                         <tr>
                             <td>
-                                <img src="images/<?php echo strtolower(str_replace(' ', '_', $item['brand'])) . '.jpg'; ?>" 
-                                     alt="<?php echo $item['name']; ?>" 
-                                     class="product-img"
-                                     onerror="this.src='https://placehold.co/60x60?text=Pastimes'">
                                 <?php echo $item['name']; ?>
                             </td>
                             <td><?php echo $item['brand']; ?></td>
@@ -212,7 +206,7 @@ $total = $subtotal + $delivery_fee;
             
             <?php if ($delivery_fee == 0): ?>
                 <div class="free-delivery-msg">
-                    🎉 You've qualified for FREE delivery!
+                    You've qualified for FREE delivery!
                 </div>
             <?php else: ?>
                 <div class="delivery-notice">
@@ -226,51 +220,18 @@ $total = $subtotal + $delivery_fee;
                 </form>
             <?php endif; ?>
             
-            <a href="shop.php" class="continue-shopping">← Continue Shopping</a>
+            <a href="shop.php" class="continue-shopping"><- Continue Shopping</a>
         </div>
     </div>
     
     <footer>
-        <div class="footer-container">
-            <div class="footer-section">
-                <h4>Pastimes</h4>
-                <p>Kempton Park's premier marketplace for pre-loved branded clothing.</p>
-                <p><strong>Email:</strong> kayge_tebogo.pastime@gmail.com</p>
-                <p><strong>Phone:</strong> 067 876 7564 / 075 675 6543</p>
-                <p><strong>Location:</strong> Kempton Park, South Africa</p>
-            </div>
-            
-            <div class="footer-section">
-                <h4>Quick Links</h4>
-                <a href="index.php">Home</a>
-                <a href="shop.php">Shop</a>
-                <a href="sell.php">Sell an Item</a>
-                <a href="about.php">About Us</a>
-                <a href="contact.php">Contact Us</a>
-                <a href="cart.php">Cart</a>
-            </div>
-            
-            <div class="footer-section">
-                <h4>Customer Service</h4>
-                <a href="#">Track Order</a>
-                <a href="#">Shipping Info</a>
-                <a href="#">Returns Policy</a>
-                <a href="#">Terms & Conditions</a>
-                <a href="#">Privacy Policy</a>
-            </div>
-            
-            <div class="footer-section">
-                <h4>Contact Us</h4>
-                <p>📞 067 876 7564</p>
-                <p>📞 075 675 6543</p>
-                <p>📧 kayge_tebogo.pastime@gmail.com</p>
-                <p>📍 Kempton Park, Gauteng</p>
-            </div>
+        <div class="footer-features">
+            <div class="feature">Secure Payments</div>
+            <div class="feature">Free Delivery over R500</div>
+            <div class="feature">Sustainable Fashion</div>
         </div>
-        <div class="footer-bottom">
-            <p>&copy; 2024 Pastimes | Tebogo Mabusela (ST10443781) & Kagiso Maputla (ST10455770)</p>
-            <p>Based in Kempton Park | Serving South Africa | All Rights Reserved</p>
-        </div>
+        <p>2024 Pastimes | Tebogo Mabusela (ST10443781) & Kagiso Maputla (ST10455770)</p>
+        <p>Based in Kempton Park | Serving South Africa</p>
     </footer>
 </body>
 </html>

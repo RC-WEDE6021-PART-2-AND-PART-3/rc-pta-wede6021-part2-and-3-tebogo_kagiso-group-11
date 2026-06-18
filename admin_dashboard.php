@@ -48,6 +48,10 @@ $users = mysqli_query($conn, "SELECT * FROM tbluser ORDER BY user_id DESC");
         .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 15px; }
         .logout-btn { background: #dc3545; color: white; padding: 8px 15px; text-decoration: none; border-radius: 5px; }
         .back-btn { background: #2D674E; color: white; padding: 8px 15px; text-decoration: none; border-radius: 5px; margin-right: 10px; display: inline-block; }
+        .admin-nav { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+        .admin-nav a { background: #2D674E; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; }
+        .admin-nav a:hover { background: #1A4A38; }
+        .admin-nav a.active { background: #1A4A38; }
         .message { background: #d4edda; color: #155724; padding: 10px; border-radius: 5px; margin-bottom: 15px; }
         table { width: 100%; border-collapse: collapse; margin-top: 20px; }
         th, td { padding: 12px; text-align: left; border-bottom: 1px solid #9AB0A6; }
@@ -58,21 +62,46 @@ $users = mysqli_query($conn, "SELECT * FROM tbluser ORDER BY user_id DESC");
         .pending { background: #ffc107; color: #1A1B1B; padding: 3px 8px; border-radius: 3px; font-size: 12px; }
         .approved { background: #28a745; color: white; padding: 3px 8px; border-radius: 3px; font-size: 12px; }
         footer { margin-top: 30px; text-align: center; color: #6B887C; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .stat-card { background: #2D674E; color: white; padding: 20px; border-radius: 10px; text-align: center; }
+        .stat-card h3 { font-size: 32px; }
+        .stat-card p { font-size: 14px; opacity: 0.8; }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h2>👑 Admin Dashboard - Customer Management</h2>
+            <h2>Admin Dashboard</h2>
             <div>
-                <a href="index.php" class="back-btn">← Back to Website</a>
+                <a href="index.php" class="back-btn"><- Back to Website</a>
                 <a href="admin_logout.php" class="logout-btn">Logout</a>
             </div>
         </div>
         
+        <div class="admin-nav">
+            <a href="admin_dashboard.php" class="active">Users</a>
+            <a href="admin_products.php">Products</a>
+            <a href="admin_requests.php">Seller Requests</a>
+            <a href="admin_orders.php">Orders</a>
+            <a href="admin_messages.php">Messages</a>
+        </div>
+        
         <?php if (isset($_GET['msg'])): ?>
-            <div class="message">✅ <?php echo htmlspecialchars($_GET['msg']); ?></div>
+            <div class="message"> <?php echo htmlspecialchars($_GET['msg']); ?></div>
         <?php endif; ?>
+        
+        <div class="stats-grid">
+            <?php
+            $total_users = mysqli_num_rows(mysqli_query($conn, "SELECT * FROM tbluser"));
+            $pending_users = mysqli_num_rows(mysqli_query($conn, "SELECT * FROM tbluser WHERE status='pending'"));
+            $total_products = mysqli_num_rows(mysqli_query($conn, "SELECT * FROM tblclothes"));
+            $total_orders = mysqli_num_rows(mysqli_query($conn, "SELECT * FROM tblorders"));
+            ?>
+            <div class="stat-card"><h3><?php echo $total_users; ?></h3><p>Total Users</p></div>
+            <div class="stat-card"><h3><?php echo $pending_users; ?></h3><p>Pending Users</p></div>
+            <div class="stat-card"><h3><?php echo $total_products; ?></h3><p>Products</p></div>
+            <div class="stat-card"><h3><?php echo $total_orders; ?></h3><p>Orders</p></div>
+        </div>
         
         <h3>Customer List</h3>
         <table>
@@ -99,7 +128,7 @@ $users = mysqli_query($conn, "SELECT * FROM tbluser ORDER BY user_id DESC");
             </tbody>
         </table>
         <footer>
-            <p>© 2024 Pastimes Admin Panel</p>
+            <p>2024 Pastimes Admin Panel</p>
         </footer>
     </div>
     

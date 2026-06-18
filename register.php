@@ -6,18 +6,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $fullname = mysqli_real_escape_string($conn, $_POST['fullname']);
     $email = mysqli_real_escape_string($conn, $_POST['email']);
     $username = mysqli_real_escape_string($conn, $_POST['username']);
-    $password = md5($_POST['password']);
+    $password = $_POST['password'];
     
-    $check = mysqli_query($conn, "SELECT * FROM tbluser WHERE username='$username' OR email='$email'");
-    if (mysqli_num_rows($check) > 0) {
-        $message = "Username or email already exists!";
+    if (strlen($password) < 8) {
+        $message = "Password must be at least 8 characters!";
     } else {
-        $sql = "INSERT INTO tbluser (fullname, email, username, password, status) VALUES ('$fullname', '$email', '$username', '$password', 'pending')";
-        if (mysqli_query($conn, $sql)) {
-            header("Location: login.php?registered=success");
-            exit();
+        $hashedPassword = md5($password);
+        $check = mysqli_query($conn, "SELECT * FROM tbluser WHERE username='$username' OR email='$email'");
+        if (mysqli_num_rows($check) > 0) {
+            $message = "Username or email already exists!";
         } else {
-            $message = "Error: " . mysqli_error($conn);
+            $sql = "INSERT INTO tbluser (fullname, email, username, password, status) VALUES ('$fullname', '$email', '$username', '$hashedPassword', 'pending')";
+            if (mysqli_query($conn, $sql)) {
+                header("Location: login.php?registered=success");
+                exit();
+            } else {
+                $message = "Error: " . mysqli_error($conn);
+            }
         }
     }
 }
@@ -40,6 +45,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         .error { color: red; text-align: center; }
         h2 { color: #2D674E; text-align: center; }
         footer { background: #1A1B1B; color: #9AB0A6; text-align: center; padding: 20px; margin-top: 50px; }
+        .info-text { font-size: 12px; color: #6B887C; text-align: center; margin-top: -5px; margin-bottom: 10px; }
     </style>
 </head>
 <body>
@@ -54,17 +60,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <div class="register-box">
             <h2>Create Account</h2>
             <?php if ($message) echo "<p class='error'>$message</p>"; ?>
-            <?php if (isset($_GET['error'])) echo "<p class='error'>Registration failed. Please try again.</p>"; ?>
             <form method="POST">
                 <input type="text" name="fullname" placeholder="Full Name" required>
                 <input type="email" name="email" placeholder="Email" required>
                 <input type="text" name="username" placeholder="Username" required>
-                <input type="password" name="password" placeholder="Password (min 8 characters)" required>
+                <input type="password" name="password" placeholder="Password" required>
+                <div class="info-text">Password must be at least 8 characters</div>
                 <button type="submit">Register</button>
             </form>
             <p style="text-align: center; margin-top: 15px;">Already have an account? <a href="login.php">Login</a></p>
+            <p style="text-align: center; margin-top: 10px; font-size: 12px; color: #6B887C;">Accounts require admin approval before login.</p>
         </div>
     </div>
-    <footer><p>© 2024 Pastimes</p></footer>
+    <footer><p>2024 Pastimes | Tebogo Mabusela (ST10443781) & Kagiso Maputla (ST10455770)</p></footer>
 </body>
 </html>

@@ -66,7 +66,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         .success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
         .error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
         .info-item { margin-bottom: 25px; }
-        .info-item .icon { font-size: 24px; display: block; margin-bottom: 10px; }
         .info-item h4 { color: #2D674E; margin-bottom: 8px; }
         .info-item p { color: #1A1B1B; line-height: 1.5; }
         .social-links { display: flex; gap: 15px; margin-top: 20px; flex-wrap: wrap; }
@@ -148,48 +147,44 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <h2>Contact Info</h2>
             
             <div class="info-item">
-                <div class="icon">📍</div>
                 <h4>Visit Us</h4>
                 <p>Kempton Park<br>Gauteng, South Africa</p>
             </div>
             
             <div class="info-item">
-                <div class="icon">📧</div>
                 <h4>Email Us</h4>
                 <p>kayge_tebogo.pastime@gmail.com</p>
             </div>
             
             <div class="info-item">
-                <div class="icon">📞</div>
                 <h4>Call or WhatsApp</h4>
                 <p>067 876 7564<br>075 675 6543</p>
                 <p style="font-size: 12px; margin-top: 5px;">Mon-Fri: 9am - 5pm</p>
             </div>
             
             <div class="info-item">
-                <div class="icon">⏰</div>
                 <h4>Store Hours</h4>
                 <p>Monday - Friday: 9am - 5pm<br>Saturday: 10am - 2pm<br>Sunday: Closed</p>
             </div>
             
             <div class="social-links">
-                <a href="#">📘 Facebook</a>
-                <a href="#">📷 Instagram</a>
-                <a href="#">🐦 Twitter</a>
-                <a href="#">💬 WhatsApp</a>
+                <a href="#">Facebook</a>
+                <a href="#">Instagram</a>
+                <a href="#">Twitter</a>
+                <a href="#">WhatsApp</a>
             </div>
             
             <div class="map-placeholder">
-                📍 Located in Kempton Park, Gauteng
+                Located in Kempton Park, Gauteng
             </div>
         </div>
     </div>
     
     <footer>
         <div class="footer-features">
-            <div class="feature">🔒 Secure Payments</div>
-            <div class="feature">📦 Free Delivery over R500</div>
-            <div class="feature">🌿 Sustainable Fashion</div>
+            <div class="feature">Secure Payments</div>
+            <div class="feature">Free Delivery over R500</div>
+            <div class="feature">Sustainable Fashion</div>
         </div>
         <p>© 2024 Pastimes | Tebogo Mabusela (ST10443781) & Kagiso Maputla (ST10455770)</p>
         <p>Serving Kempton Park and all of South Africa</p>

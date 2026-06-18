@@ -28,7 +28,6 @@ session_start();
         .mission-box h3 { color: #2D674E; margin-bottom: 15px; }
         .values { display: flex; gap: 30px; margin-top: 30px; flex-wrap: wrap; }
         .value-card { flex: 1; background: #F2EADF; padding: 20px; border-radius: 10px; text-align: center; min-width: 150px; }
-        .value-card .icon { font-size: 40px; display: block; margin-bottom: 10px; }
         .value-card h4 { color: #2D674E; margin-bottom: 10px; }
         .value-card p { color: #6B887C; font-size: 14px; }
         .location-box { background: #2D674E; color: white; padding: 20px; border-radius: 10px; margin-top: 30px; text-align: center; }
@@ -77,50 +76,46 @@ session_start();
                 <p>We believe that great style shouldn't come at the cost of our planet. Every pre-loved item sold on Pastimes gives clothing a second life, reducing waste and promoting a circular fashion economy.</p>
                 
                 <div class="mission-box">
-                    <h3>🌍 Our Mission</h3>
+                    <h3>Our Mission</h3>
                     <p>To create a community where fashion lovers can buy and sell quality pre-owned clothing, making sustainable style the norm rather than the exception across South Africa.</p>
                 </div>
                 
                 <h3>Our Values</h3>
                 <div class="values">
                     <div class="value-card">
-                        <span class="icon">♻️</span>
                         <h4>Sustainability</h4>
                         <p>Reducing fashion waste one item at a time</p>
                     </div>
                     <div class="value-card">
-                        <span class="icon">🤝</span>
                         <h4>Community</h4>
                         <p>Building a trusted marketplace for all</p>
                     </div>
                     <div class="value-card">
-                        <span class="icon">💎</span>
                         <h4>Quality</h4>
                         <p>Curating only the best pre-loved items</p>
                     </div>
                     <div class="value-card">
-                        <span class="icon">💰</span>
                         <h4>Affordability</h4>
                         <p>Amazing prices for everyone</p>
                     </div>
                 </div>
                 
                 <div class="location-box">
-                    <p><strong>📍 Based in Kempton Park, Gauteng</strong></p>
+                    <p><strong>Based in Kempton Park, Gauteng</strong></p>
                     <p>Serving all of South Africa with quality pre-loved branded clothing</p>
                 </div>
                 
-                <p style="margin-top: 30px;"><strong>📧 Email:</strong> kayge_tebogo.pastime@gmail.com</p>
-                <p><strong>📞 Phone:</strong> 067 876 7564 / 075 675 6543</p>
+                <p style="margin-top: 30px;"><strong>Email:</strong> kayge_tebogo.pastime@gmail.com</p>
+                <p><strong>Phone:</strong> 067 876 7564 / 075 675 6543</p>
             </div>
         </div>
     </div>
     
     <footer>
         <div class="footer-features">
-            <div class="feature">🔒 Secure Payments</div>
-            <div class="feature">📦 Free Delivery over R500</div>
-            <div class="feature">🌿 Sustainable Fashion</div>
+            <div class="feature">Secure Payments</div>
+            <div class="feature">Free Delivery over R500</div>
+            <div class="feature">Sustainable Fashion</div>
         </div>
         <p>© 2024 Pastimes | Tebogo Mabusela (ST10443781) & Kagiso Maputla (ST10455770)</p>
         <p>Based in Kempton Park | Serving South Africa</p>
