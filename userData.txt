@@ -1,0 +1,5 @@
+Thabo Nkosi|thabo.nkosi@email.com|thabo123|password123|approved
+Lerato Molefe|lerato.m@email.com|lerato_m|password123|approved
+Sipho Dlamini|sipho.d@email.com|sipho_d|password123|pending
+Nomsa Khumalo|nomsa.k@email.com|nomsa_k|password123|approved
+Kagiso Maputla|kagiso.m@email.com|kagiso_m|password123|approved
